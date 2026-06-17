@@ -1,0 +1,194 @@
+---
+title: "Child Malnutrition in Africa, with a Focus on Ghana"
+subtitle: "From the continent, to Ghana, to its 16 regions"
+author: "Kingsley Amegah"
+date: "`r format(Sys.Date(), '%B %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: flatly
+    code_folding: hide
+    df_print: kable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 9, fig.height = 5.5, fig.align = "center")
+library(tidyverse); library(sf); library(scales); library(ggrepel)
+theme_set(theme_minimal(base_size = 12))
+ACC <- "#1b9e77"; HI <- "#d73027"
+```
+
+# Introduction
+
+Malnutrition remains one of the defining health challenges in Africa, but the
+picture is far from uniform. This report zooms in across three levels: where
+**Ghana sits among African countries**, how malnutrition has **changed within
+Ghana**, and how it is **distributed across Ghana's 16 regions** and social
+groups. Ghana is an instructive case: a relative success story on chronic
+undernutrition that still carries sharp internal inequalities.
+
+The headline indicator is **stunting** (low height-for-age, the standard measure
+of chronic child undernutrition), complemented by underweight, wasting,
+overweight and anaemia.
+
+# Data and methods
+
+All data come from open sources, with no API keys required:
+
+- **DHS Program API** - Ghana stunting by region and by wealth, education and
+  residence, across survey rounds (1993–2022).
+- **World Bank Open Data API** - malnutrition indicators for African countries
+  and Ghana's national trend.
+- **geoBoundaries** - Ghana's administrative (region) boundaries for mapping.
+
+Analysis is descriptive and equity-focused: continental benchmarking, national
+trends, a regional choropleth, and disparity ratios across social groups.
+
+```{r load}
+afr   <- read_csv("data/africa_stunting_latest.csv", show_col_types = FALSE)
+trend <- read_csv("data/ghana_trend.csv", show_col_types = FALSE)
+region<- read_csv("data/ghana_stunting_region.csv", show_col_types = FALSE)
+equity<- read_csv("data/ghana_equity.csv", show_col_types = FALSE)
+gh_sf <- st_read("data/ghana_adm1.geojson", quiet = TRUE) |>
+  mutate(region = str_remove(shapeName, " Region$"))
+```
+
+# Africa context: where does Ghana stand?
+
+```{r africa, fig.height=9}
+afr <- afr |> mutate(is_ghana = iso3 == "GHA")
+ghana_val <- afr$value[afr$iso3 == "GHA"]
+afr_median <- median(afr$value)
+ggplot(afr, aes(value, fct_reorder(country, value), fill = is_ghana)) +
+  geom_col() +
+  geom_vline(xintercept = afr_median, linetype = "dashed", colour = "grey40") +
+  scale_fill_manual(values = c(`FALSE` = "grey75", `TRUE` = HI), guide = "none") +
+  labs(title = "Child stunting across African countries (latest available)",
+       subtitle = sprintf("Ghana = %.0f%% (red); African median = %.0f%% (dashed). Lower is better.",
+                          ghana_val, afr_median),
+       x = "Stunting prevalence (% of under-5s)", y = NULL)
+```
+
+Ghana's stunting prevalence (`r round(ghana_val)`%) is **well below the African
+median** of `r round(afr_median)`%, placing it among the continent's stronger
+performers on chronic undernutrition.
+
+# Ghana over time: progress and the double burden
+
+```{r trend}
+trend |>
+  filter(indicator %in% c("stunting", "underweight", "overweight", "severe_wasting")) |>
+  ggplot(aes(year, value, colour = indicator)) +
+  geom_line(linewidth = 1) + geom_point(size = 2) +
+  scale_colour_brewer(palette = "Set1") +
+  labs(title = "Ghana: child malnutrition indicators over time",
+       x = NULL, y = "% of children under 5", colour = NULL)
+```
+
+Chronic undernutrition (stunting, underweight) has fallen substantially, yet
+**wasting has not disappeared and overweight persists** - the early signs of a
+"double burden" of malnutrition that increasingly characterises middle-income
+transitions.
+
+# Within Ghana: the regional divide
+
+We map stunting across Ghana's 16 regions using the most recent survey (2022).
+DHS reports a mix of old and new regions; we select the 16 current regions and
+match them to the boundary file.
+
+```{r map}
+# Map DHS 2022 leaf labels -> boundary region names
+m <- c("..Western (post 2022)"="Western", "..Western North"="Western North",
+       "Central"="Central", "Greater Accra"="Greater Accra",
+       "..Volta (post 2022)"="Volta", "..Oti"="Oti", "Eastern"="Eastern",
+       "Ashanti"="Ashanti", "..Ahafo"="Ahafo", "..Bono"="Bono",
+       "..Bono East"="Bono East", "....Northern(post 2022)"="Northern",
+       "....Savannah"="Savannah", "....Northeast"="North East",
+       "..Upper East"="Upper East", "..Upper West"="Upper West")
+reg22 <- region |> filter(survey_year == 2022, label %in% names(m)) |>
+  mutate(region = m[label]) |> select(region, stunting = value)
+
+map_df <- gh_sf |> left_join(reg22, by = "region")
+ggplot(map_df) +
+  geom_sf(aes(fill = stunting), colour = "white", linewidth = 0.3) +
+  scale_fill_distiller(palette = "RdYlGn", direction = -1, name = "Stunting %") +
+  geom_sf_text(aes(label = paste0(region, "\n", round(stunting), "%")), size = 2.4) +
+  labs(title = "Child stunting by region, Ghana 2022",
+       subtitle = "The north carries a far heavier burden than the south") +
+  theme_void(base_size = 12)
+```
+
+```{r region-bar, fig.height=6}
+reg22 |>
+  ggplot(aes(stunting, fct_reorder(region, stunting))) +
+  geom_col(fill = ACC) +
+  geom_text(aes(label = paste0(round(stunting), "%")), hjust = -0.15, size = 3) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.12))) +
+  labs(title = "Stunting by region, Ghana 2022 (ranked)",
+       x = "Stunting (%)", y = NULL)
+```
+
+```{r region-stats, echo=FALSE}
+hi <- reg22 |> slice_max(stunting, n = 1)
+lo <- reg22 |> slice_min(stunting, n = 1)
+```
+
+The gap is stark: stunting ranges from about **`r round(lo$stunting)`% in
+`r lo$region`** to **`r round(hi$stunting)`% in `r hi$region`** - a
+`r round(hi$stunting/lo$stunting, 1)`-fold difference between the best and
+worst regions, reflecting Ghana's well-documented north–south divide.
+
+# Inequality by wealth, education and residence
+
+```{r equity}
+eq <- equity |>
+  filter(survey_year == 2022, indicator == "stunting",
+         category %in% c("Wealth quintile", "Education", "Residence", "Sex")) |>
+  mutate(label = factor(label, levels = c(
+    "Lowest","Second","Middle","Fourth","Highest",
+    "No education","Primary","Secondary","Higher",
+    "Rural","Urban","Male","Female")))
+ggplot(eq, aes(label, value, fill = category)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(aes(label = paste0(round(value), "%")), vjust = -0.3, size = 3) +
+  facet_wrap(~ category, scales = "free_x") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(title = "Stunting by social group, Ghana 2022",
+       x = NULL, y = "Stunting (%)")
+```
+
+```{r equity-stats, echo=FALSE}
+gv <- function(cat, lab) eq$value[eq$category==cat & eq$label==lab]
+w_ratio <- gv("Wealth quintile","Lowest")/gv("Wealth quintile","Highest")
+e_ratio <- gv("Education","No education")/gv("Education","Higher")
+```
+
+The social gradient is steep. Children in the **poorest** wealth quintile are
+about **`r round(w_ratio,1)` times** as likely to be stunted as those in the
+**richest** (`r round(gv("Wealth quintile","Lowest"))`% vs
+`r round(gv("Wealth quintile","Highest"))`%), and children of mothers with
+**no education** are around **`r round(e_ratio,1)` times** as likely as those
+whose mothers have higher education. Rural children fare worse than urban ones.
+These gaps show that national averages hide who is being left behind.
+
+# Conclusion and limitations
+
+**Conclusion.** Ghana is a relative success on chronic child undernutrition,
+outperforming most African countries and reducing stunting over two decades. But
+the national average conceals a sharp **north–south divide** and steep
+**wealth and education gradients**. Progress now depends less on national growth
+than on **reaching the poorest regions and households** - and emerging overweight
+signals a coming double burden.
+
+**Limitations.** Survey estimates carry sampling error and are collected only
+every few years; region definitions changed in 2019, complicating long-run
+regional comparisons; and this is an ecological, descriptive analysis, so
+associations should not be read as causal.
+
+---
+
+*Built in R (tidyverse, sf, ggplot2) from DHS, World Bank and geoBoundaries open
+data. Author: Kingsley Amegah.*

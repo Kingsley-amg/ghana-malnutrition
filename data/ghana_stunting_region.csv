@@ -1,0 +1,66 @@
+survey_year,indicator,category,label,value
+1993,CN_NUTS_C_HA2,Region,Western (pre 2022),37.9
+1993,CN_NUTS_C_HA2,Region,Central,29.1
+1993,CN_NUTS_C_HA2,Region,Greater Accra,20
+1993,CN_NUTS_C_HA2,Region,Volta (pre 2022),26.2
+1993,CN_NUTS_C_HA2,Region,Eastern,32
+1993,CN_NUTS_C_HA2,Region,Ashanti,34.9
+1993,CN_NUTS_C_HA2,Region,Brong-Ahafo,32.4
+1993,CN_NUTS_C_HA2,Region,"Northern, Upper West, Upper East",39.3
+1993,CN_NUTS_C_HA2,Region,..Northern (pre 2022),44.1
+1993,CN_NUTS_C_HA2,Region,..Upper West,44.3
+1993,CN_NUTS_C_HA2,Region,..Upper East,30.6
+1998,CN_NUTS_C_HA2,Region,Western (pre 2022),32.7
+1998,CN_NUTS_C_HA2,Region,Central,32.5
+1998,CN_NUTS_C_HA2,Region,Greater Accra,14
+1998,CN_NUTS_C_HA2,Region,Volta (pre 2022),28.6
+1998,CN_NUTS_C_HA2,Region,Eastern,28.3
+1998,CN_NUTS_C_HA2,Region,Ashanti,33.5
+1998,CN_NUTS_C_HA2,Region,Brong-Ahafo,22.4
+1998,CN_NUTS_C_HA2,Region,"Northern, Upper West, Upper East",43.2
+1998,CN_NUTS_C_HA2,Region,..Northern (pre 2022),45
+1998,CN_NUTS_C_HA2,Region,..Upper West,39.9
+1998,CN_NUTS_C_HA2,Region,..Upper East,42.9
+2008,CN_NUTS_C_HA2,Region,Western (pre 2022),27
+2008,CN_NUTS_C_HA2,Region,Central,33.7
+2008,CN_NUTS_C_HA2,Region,Greater Accra,14.2
+2008,CN_NUTS_C_HA2,Region,Volta (pre 2022),26.8
+2008,CN_NUTS_C_HA2,Region,Eastern,37.9
+2008,CN_NUTS_C_HA2,Region,Ashanti,26.5
+2008,CN_NUTS_C_HA2,Region,Brong-Ahafo,25.2
+2008,CN_NUTS_C_HA2,Region,"Northern, Upper West, Upper East",32.2
+2008,CN_NUTS_C_HA2,Region,..Northern (pre 2022),32.4
+2008,CN_NUTS_C_HA2,Region,..Upper West,24.6
+2008,CN_NUTS_C_HA2,Region,..Upper East,36
+2014,CN_NUTS_C_HA2,Region,Western (pre 2022),17.7
+2014,CN_NUTS_C_HA2,Region,Central,22
+2014,CN_NUTS_C_HA2,Region,Greater Accra,10.4
+2014,CN_NUTS_C_HA2,Region,Volta (pre 2022),19.3
+2014,CN_NUTS_C_HA2,Region,Eastern,17
+2014,CN_NUTS_C_HA2,Region,Ashanti,16.1
+2014,CN_NUTS_C_HA2,Region,Brong-Ahafo,17.2
+2014,CN_NUTS_C_HA2,Region,"Northern, Upper West, Upper East",27.6
+2014,CN_NUTS_C_HA2,Region,..Northern (pre 2022),33.1
+2014,CN_NUTS_C_HA2,Region,..Upper West,22.2
+2014,CN_NUTS_C_HA2,Region,..Upper East,14.4
+2022,CN_NUTS_C_HA2,Region,Western (pre 2022),12.7
+2022,CN_NUTS_C_HA2,Region,..Western (post 2022),13.5
+2022,CN_NUTS_C_HA2,Region,..Western North,10.6
+2022,CN_NUTS_C_HA2,Region,Central,16.5
+2022,CN_NUTS_C_HA2,Region,Greater Accra,11.4
+2022,CN_NUTS_C_HA2,Region,Volta (pre 2022),17.1
+2022,CN_NUTS_C_HA2,Region,..Volta (post 2022),14.4
+2022,CN_NUTS_C_HA2,Region,..Oti,20.3
+2022,CN_NUTS_C_HA2,Region,Eastern,10.4
+2022,CN_NUTS_C_HA2,Region,Ashanti,17.2
+2022,CN_NUTS_C_HA2,Region,Brong-Ahafo,15.4
+2022,CN_NUTS_C_HA2,Region,..Ahafo,16.5
+2022,CN_NUTS_C_HA2,Region,..Bono,17
+2022,CN_NUTS_C_HA2,Region,..Bono East,13.9
+2022,CN_NUTS_C_HA2,Region,"Northern, Upper West, Upper East",25.3
+2022,CN_NUTS_C_HA2,Region,..Northern (pre 2022),28.1
+2022,CN_NUTS_C_HA2,Region,....Northern(post 2022),29.6
+2022,CN_NUTS_C_HA2,Region,....Savannah,21
+2022,CN_NUTS_C_HA2,Region,....Northeast,29.3
+2022,CN_NUTS_C_HA2,Region,..Upper West,16.5
+2022,CN_NUTS_C_HA2,Region,..Upper East,21.1
