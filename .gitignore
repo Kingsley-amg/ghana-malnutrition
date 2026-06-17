@@ -4,3 +4,7 @@
 .DS_Store
 *_files/
 *_cache/
+
+# generated video assets (upload the mp4 directly)
+video/
+*.mp4
